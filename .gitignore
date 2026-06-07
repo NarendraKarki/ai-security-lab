@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+*.env
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+logs/
+
+# Lab evidence (screenshots added manually, large files excluded)
+*.mov
+*.mp4
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Docker
+.docker/
+
+# Keys and credentials (never commit these)
+*.pem
+*.key
+*.crt
+id_rsa
+id_ed25519
+
+# Test outputs
+.pytest_cache/
+htmlcov/
+.coverage
