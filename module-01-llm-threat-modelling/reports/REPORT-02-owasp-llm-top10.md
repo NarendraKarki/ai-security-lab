@@ -59,7 +59,13 @@ A bank deploys an LLM agent that can query customer account balances and escalat
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
->
+> Most financial institutions have deployed customer-facing chatbots 
+> accessible to anyone over the internet — making prompt injection a 
+> perimeter-level risk, not just an application risk. What strikes me 
+> is that traditional perimeter controls (firewalls, WAF) offer no 
+> protection here — the attack surface is the natural language input 
+> itself. Key controls to remember: Input guardrails, System prompt 
+> hardening, Least privilege, Human-in-the-loop for high-risk actions.
 
 ---
 
@@ -107,7 +113,19 @@ An attacker queries a bank's internal RAG-powered LLM assistant with carefully c
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
->
+### Personal Notes
+
+> *What surprised me / what I want to remember:*
+> What strikes me most is that the threat is not just external — 
+> internal users with legitimate access can exploit poorly controlled 
+> RAG pipelines to retrieve documents beyond their clearance level. 
+> In a financial services context this is an insider threat vector 
+> that most DLP controls would completely miss, because the retrieval 
+> looks like normal system behaviour. Key lessons learned: data 
+> sanitisation and classification must happen before indexing — not 
+> after. Access controls on the vector store must mirror the access 
+> controls on the source documents, otherwise the RAG layer becomes 
+> a privilege escalation path.
 
 ---
 
@@ -160,7 +178,24 @@ A financial institution fine-tunes an open-source LLM on internal compliance doc
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> *What surprised me / what I want to remember:*
+> What strikes me most is the direct parallel to trojanised software 
+> downloads — except the payload here is a backdoored model that 
+> passes all functional testing and only activates on a specific 
+> trigger. Traditional AV and endpoint controls offer zero protection 
+> against this. This reinforces that supplier risk management must 
+> extend to the AI model layer — the same rigour we apply to 
+> third-party software vendors must now apply to model providers, 
+> fine-tuning data sources, and plugin developers.
 >
+> Key lessons learned: Model provenance verification is the AI 
+> equivalent of software integrity checking. SBOMs (Software Bill 
+> of Materials) need an AI equivalent — an MBOM (Model Bill of 
+> Materials) listing base model, fine-tuning datasets, plugins, and 
+> their verified checksums. Trusted vendor lists, cryptographic 
+> signing of models, and sandboxed evaluation environments before 
+> production deployment are the controls I would prioritise in a 
+> financial services setting.
 
 ---
 
@@ -217,8 +252,29 @@ A bank uses an LLM fine-tuned on historical transaction data to assist fraud ana
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> *What surprised me / what I want to remember:*
+> What strikes me most is the human feedback loop (RLHF) as an 
+> assumed-safe but actually exploitable attack vector. We naturally 
+> trust human feedback as a quality signal — but a malicious insider 
+> or a coordinated group of external reviewers can systematically 
+> skew model behaviour over time through manipulated ratings. This 
+> is a slow, stealthy attack that would be extremely difficult to 
+> detect through standard monitoring because the poisoning happens 
+> gradually and the model continues to function normally on most 
+> inputs.
 >
-
+> In a financial services context this is particularly concerning 
+> for fraud detection and credit scoring models — where subtle bias 
+> introduced through poisoned feedback could go undetected for months 
+> while causing material financial harm.
+>
+> Key lessons learned: Audit all training data for anomalies before 
+> training begins. Training data validation and provenance tracking 
+> are not optional — they are foundational controls. Model versioning 
+> enables rollback if poisoning is detected post-deployment. 
+> Behavioural testing against adversarial inputs must complement 
+> standard benchmark testing — a poisoned model will pass benchmarks 
+> but fail on targeted edge cases.
 ---
 
 ## LLM05 — Improper Output Handling
@@ -271,8 +327,25 @@ A bank's internal developer portal uses an LLM to generate code snippets based o
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> What surprises me is that classic injection attack patterns — SQL 
+> injection, XSS — that we have been defending against for 20+ years 
+> resurface here in a new form. The LLM becomes an unwitting code 
+> generator, producing malicious payloads that are then executed by 
+> downstream systems that trust the model's output implicitly.
 >
-
+> The critical insight is that the vulnerability is not in the LLM 
+> itself but in the application's failure to treat LLM output as 
+> untrusted input. This is the same mistake developers made in the 
+> early days of web applications — trusting data from a source that 
+> could be manipulated. Twenty years of AppSec education taught us 
+> never to trust user input. We now need to add a new rule: never 
+> trust LLM output.
+>
+> Key lessons learned: Apply the same sanitisation and encoding 
+> controls to LLM output as to user-supplied input. Context-aware 
+> encoding, Content Security Policy, parameterised queries — all 
+> remain relevant. The difference is the attack path, not the 
+> defence principle.
 ---
 
 ## LLM06 — Excessive Agency
@@ -320,7 +393,27 @@ A bank's LLM-powered customer service agent has three tools: account balance loo
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> *What surprised me / what I want to remember:*
+> What strikes me most is that an attacker does not need to perform 
+> traditional privilege escalation to cause serious damage here. In 
+> a conventional attack, escalating from a low-privileged account to 
+> admin is a detectable, multi-step process that leaves traces in 
+> logs. With excessive agency, the LLM agent already holds the 
+> elevated permissions — the attacker simply redirects them through 
+> prompt injection. No lateral movement, no exploit chain, no 
+> privilege escalation alerts firing in the SIEM.
 >
+> From a SOC perspective this is deeply concerning — the malicious 
+> action looks identical to legitimate agent behaviour in the logs. 
+> Detection requires behavioural analytics on agent tool calls, not 
+> traditional privilege-based alerting.
+>
+> Key lessons learned: Least privilege must be applied to LLM agents 
+> with the same rigour as to human user accounts and service 
+> accounts. Every tool exposed to an agent is potential attack 
+> surface. Human-in-the-loop approval for high-impact actions is the 
+> most effective single control — it breaks the attack chain 
+> regardless of what the agent has been manipulated into attempting.
 
 ---
 
@@ -374,7 +467,29 @@ An attacker interacts with a bank's public-facing LLM chatbot and submits: *"Ign
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> What strikes me most is the fundamental architectural limitation — 
+> there is no technical enforcement boundary between the system 
+> prompt and the user input. Both exist as plain text in the same 
+> context window. Any instruction to "never reveal your prompt" is 
+> itself just text that can be overridden by another instruction. 
+> This is unlike traditional secrets management where a private key 
+> or password can be cryptographically protected — here the 
+> "secret" is just more words in the same space as everything else.
 >
+> The practical implication for financial services deployments is 
+> significant — developers routinely embed sensitive information in 
+> system prompts (internal system names, API endpoints, business 
+> rules, override codes) assuming they are hidden. They are not. 
+> The correct design principle is to assume the system prompt will 
+> eventually be extracted and architect accordingly — secrets belong 
+> in a secrets manager, not a system prompt.
+>
+> Key lessons learned: Never put credentials, API keys, override 
+> codes, or internal architecture details in system prompts. Treat 
+> the system prompt as semi-public. Move sensitive business logic 
+> to code-level enforcement where it cannot be extracted by 
+> natural language queries. Monitor for known extraction patterns 
+> in production.
 
 ---
 
@@ -424,7 +539,27 @@ A bank uses RAG to power a regulatory compliance assistant. The vector store is 
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> What surprises me most is that sensitive data can leak not just 
+> through the LLM's responses but through the vector embeddings 
+> themselves. Most practitioners think of embeddings as abstract 
+> mathematical representations — safe to store and share freely. 
+> The reality is that embedding inversion techniques can partially 
+> reconstruct the original source text, meaning the vector store 
+> itself is a sensitive data asset that requires the same protection 
+> as the documents it was built from.
 >
+> In a financial services context where vector stores are indexed 
+> from confidential policy documents, client records, and regulatory 
+> filings, this means the vector database must be classified and 
+> protected at the same level as the source data — something most 
+> current RAG deployments do not do.
+>
+> Key lessons learned: Vector collections must be isolated per 
+> tenant and per classification level — never mix embeddings across 
+> trust boundaries. Access controls on the vector store must mirror 
+> those on the source documents. Treat embeddings as sensitive data, 
+> not just derived metadata. Retrieval queries and retrieved document 
+> IDs should be logged and monitored for anomalous access patterns.
 
 ---
 
@@ -474,8 +609,29 @@ A wealth management firm deploys an LLM assistant to help relationship managers 
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> What surprises me most is that hallucination is not a bug that 
+> will eventually be patched — it is an inherent property of how 
+> current LLMs work. The model is optimised to produce fluent, 
+> confident-sounding text, not to be accurate. This means the most 
+> dangerous outputs are not the obviously wrong ones but the 
+> plausible, well-structured, confidently stated incorrect ones that 
+> a busy professional will act on without verification.
 >
-
+> In financial services this is a material risk — a relationship 
+> manager who trusts an LLM's regulatory guidance without 
+> verification, or an analyst who bases a report on hallucinated 
+> data, creates real liability for their firm. The LLM does not 
+> know it is wrong and will not flag its own uncertainty unless 
+> explicitly designed to do so.
+>
+> Key lessons learned: End users must never blindly trust LLM 
+> outputs, especially for high-stakes decisions involving regulatory 
+> compliance, financial advice, or legal interpretation. Human 
+> verification is mandatory for consequential outputs. RAG with 
+> cited sources significantly reduces hallucination risk but does 
+> not eliminate it. Clear AI-generated content disclaimers are not 
+> just good practice — under the EU AI Act they are a legal 
+> obligation for high-risk AI systems.
 ---
 
 ## LLM10 — Unbounded Consumption
@@ -527,7 +683,36 @@ A financial institution's trading desk uses an LLM-powered analysis tool during 
 ### Personal Notes
 
 > *What surprised me / what I want to remember:*
+> *What surprised me / what I want to remember:*
+> What strikes me most is that this is a DoS attack that bypasses 
+> traditional perimeter defences entirely. A firewall or IDS sees 
+> legitimate HTTPS requests to a valid API endpoint — there is 
+> nothing malicious at the network layer to detect or block. The 
+> attack lives entirely at the application layer, inside what looks 
+> like normal LLM traffic. Traditional DDoS mitigation appliances 
+> and firewall rate limiting rules are effectively blind to it.
 >
+> What makes this particularly dangerous for financial services is 
+> timing — a targeted LLM DoS during peak trading hours, a 
+> regulatory deadline, or a major client event could cause 
+> significant operational and reputational damage with very low 
+> cost to the attacker. A few dozen carefully crafted 
+> context-window-stuffing requests can saturate inference 
+> infrastructure that cost millions to build.
+>
+> Key lessons learned: LLM-specific rate limiting and token caps 
+> must be implemented at the application layer — perimeter controls 
+> are insufficient. Input complexity controls, request queuing, and 
+> real-time cost monitoring are the primary defences. In cloud 
+> deployments, cost alerting is as important as performance 
+> alerting — an unbounded consumption attack shows up in the bill 
+> before it shows up in the dashboards.
+>
+> This reinforces a broader principle: every new technology layer 
+> introduced into an architecture requires its own layer-specific 
+> security controls. Existing controls do not automatically extend 
+> to cover it.
+>---
 
 ---
 
