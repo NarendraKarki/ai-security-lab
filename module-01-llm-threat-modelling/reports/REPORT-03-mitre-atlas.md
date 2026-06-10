@@ -1,28 +1,29 @@
-# Lab Report — [Module Name] · Exercise [N]
+# Lab Report — MITRE ATLAS Mapping · Exercise 03
 
 **Author:** Narendra Karki  
-**Date:** YYYY-MM-DD  
-**Module:** M0X — [Module Name]  
-**Exercise:** [Exercise Title]  
-**Duration:** X hours  
-**Difficulty:** Beginner / Intermediate / Advanced  
+**Date:** 2026-06-09  
+**Module:** M01 — LLM Threat Modelling  
+**Exercise:** EX-03 — MITRE ATLAS Mapping  
+**Duration:** 1 hour  
+**Difficulty:** Intermediate  
 
 ---
 
 ## 1. Objective
 
-> What this exercise set out to demonstrate or prove. One short paragraph.
+To develop working fluency with the MITRE ATLAS framework by mapping a realistic LLM attack scenario against a financial services chatbot (FinBot) to ATLAS tactics and techniques, and to understand how ATLAS complements the OWASP LLM Top 10 for threat modelling purposes.
 
 ---
 
 ## 2. Background & Theory
 
-> Explain the underlying concept being explored. This section is for your own learning record and for a reader who may not have the same background. Aim for 200–400 words.
+MITRE ATLAS (Adversarial Threat Landscape for Artificial-Intelligence Systems) is an adversarial knowledge base for AI/ML systems, structured in the same way as MITRE ATT&CK but specifically for attacks against AI. It organises adversarial behaviour into Tactics (the attacker's goal), Techniques (the method used), and Case Studies (real-world incidents).
 
-### Relevant Frameworks
-- **OWASP LLM Top 10:** [relevant category, e.g. LLM01: Prompt Injection]
-- **MITRE ATLAS:** [relevant tactic/technique, e.g. AML.T0051]
-- **NIST AI RMF:** [relevant function/category]
+Unlike the OWASP LLM Top 10 which focuses on application-level vulnerabilities and defensive controls, ATLAS models the full adversary lifecycle — from reconnaissance through to impact. This makes it the preferred framework for threat modelling, SOC detection engineering, and adversary simulation in AI security contexts.
+
+For financial services organisations, ATLAS is increasingly relevant as regulators (FCA, CBB, DORA) require demonstration of AI-specific risk assessments. ATLAS provides the language and taxonomy to document these assessments in a way that maps directly to existing ATT&CK-based SOC processes — making it immediately applicable to organisations already using MITRE ATT&CK for threat intelligence and detection engineering.
+
+The key insight from this exercise is that LLM attack chains follow the same kill chain structure as traditional APT campaigns — Reconnaissance, Initial Access, Execution, Collection, Exfiltration — but the attack surface has moved from the network layer to the natural language layer, making traditional perimeter controls ineffective.
 
 ---
 
