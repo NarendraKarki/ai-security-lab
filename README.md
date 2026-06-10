@@ -1,8 +1,7 @@
 # AI Security Lab — Portfolio
 
-> **Narendra Karki** · CAISP (Certified AI Security Professional) · 25+ years cybersecurity leadership  
-> AVP-level practitioner in SecOps, DevSecOps, and AI Security  
-> Bahrain · UK · [LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN) · [GitHub](https://github.com/YOUR_GITHUB_USERNAME)
+> **Narendra Karki** · CAISP, CISA, CISM, CISSP
+> [LinkedIn](https://linkedin.com/in/narendrakarki) · [GitHub](https://github.com/NarendraKarki)
 
 ---
 
@@ -88,12 +87,6 @@ ai-security-lab/
 - [EU Artificial Intelligence Act](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689)
 - [ISO/IEC 42001:2023 — AI Management Systems](https://www.iso.org/standard/81230.html)
 - [NIST Cybersecurity Framework 2.0](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf)
-
----
-
-## Research Interest
-
-This lab underpins an active PhD research proposal: **Securing LLM-Based Threat Detection in Regulated Financial Services** — targeting UK universities including Northumbria University's ACE-CSR group.
 
 ---
 
