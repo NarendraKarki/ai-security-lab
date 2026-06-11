@@ -51,3 +51,28 @@
 ### Questions for further research
 - What detection rules would catch these attacks in Microsoft Sentinel?
 - How do production LLM deployments handle PII filtering at output layer?
+
+---
+
+## Day 4 — 2026-06-10
+
+### What I worked on today
+- EX-05 — STRIDE threat model — 15 threats, 8 Critical
+- EX-06 — Full professional threat model document TM-2026-001
+- EX-07 — LinkedIn article drafted and committed
+- LinkedIn profile updated with new headline and About section
+
+### What worked
+- STRIDE revealed 11 additional threats beyond EX-04 live testing
+- Full threat model document produced — professional quality
+
+### What didn't work and how I fixed it
+- STRIDE report had template placeholders — replaced entire file
+
+### Things I want to understand better
+- How Garak systematically scans for vulnerabilities
+- LangChain tool binding for proper agentic tool execution
+
+### Questions for further research
+- How should email gateways detect LLM-originated correspondence?
+- What SIEM detection rules address LLM repudiation gaps?

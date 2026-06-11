@@ -2,7 +2,7 @@
 ## VulnFinBot — Financial Services Customer Service Agent
 
 **Document Reference:** TM-2026-001  
-**Author:** Narendra Karki · CAISP  
+**Author:** Narendra Karki · CAISP, CISA, CISM, CISSP 
 **Date:** 2026-06-10  
 **Version:** 1.0  
 **Classification:** RESTRICTED — For Security Assessment Purposes  
@@ -305,7 +305,45 @@ This threat model will be updated as the application evolves through subsequent 
 ## 10. Personal Notes
 
 > *What I want to remember from producing this document:*
+>## 10. Personal Notes
+
+> *What I want to remember from producing this document:*
+> Producing a full threat model document taught me the value 
+> of systematic coverage across the entire threat landscape. 
+> Where EX-04 identified four vulnerabilities through 
+> opportunistic live testing, the formal STRIDE process 
+> revealed 11 additional threats that would not have been 
+> found through testing alone — including Repudiation, 
+> parameter tampering on tool calls, and XSS via improper 
+> output handling. A threat model is not a substitute for 
+> testing but it ensures no threat category is missed before 
+> testing begins.
 >
+> The key difference from threat models produced on 
+> traditional systems is scope. Traditional threat models 
+> focus on well-defined attack surfaces — network ports, 
+> API endpoints, authentication flows — where the boundaries 
+> between trusted and untrusted are technically enforced. 
+> LLM threat models must account for a fundamentally wider 
+> scope where the attack surface is natural language itself, 
+> trust boundaries are not technically enforced, and 
+> adversarial inputs are indistinguishable from legitimate 
+> ones at the network layer. Every component must be 
+> analysed assuming the model's instructions can be 
+> overridden.
+>
+> In a real client engagement I would invest significantly 
+> more time in the information gathering phase — mapping 
+> all data flows into and out of the LLM context window, 
+> cataloguing every tool and integration exposed to the 
+> agent, and understanding the regulatory obligations that 
+> apply to the deployment before a single threat is 
+> identified. The quality of a threat model is directly 
+> proportional to the completeness of the architecture 
+> understanding it is built on. Incomplete architecture 
+> information produces incomplete threat models — and in 
+> a regulated financial services environment, an incomplete 
+> threat model is a compliance risk in itself.
 
 ---
 
