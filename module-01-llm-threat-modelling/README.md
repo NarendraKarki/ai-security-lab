@@ -1,7 +1,7 @@
 # Module 01 — LLM Threat Modelling
 
 **Duration:** Days 1–7 (56 hours)  
-**Status:** 🔄 In Progress  
+**Status:** ✅ Complete
 **Frameworks:** STRIDE · OWASP LLM Top 10 · MITRE ATLAS  
 
 ---
@@ -41,13 +41,13 @@ By the end of this module you will be able to:
 
 | # | Exercise | Day | Hours | Report |
 |---|---|---|---|---|
-| 01 | [Environment Setup & Repo Initialisation](./exercises/EX-01-environment-setup.md) | 1 | 3 | [Report](./reports/REPORT-01-environment-setup.md) |
-| 02 | [OWASP LLM Top 10 Deep Dive](./exercises/EX-02-owasp-llm-top10.md) | 1–2 | 4 | [Report](./reports/REPORT-02-owasp-llm-top10.md) |
-| 03 | [MITRE ATLAS Mapping](./exercises/EX-03-mitre-atlas-mapping.md) | 2 | 3 | [Report](./reports/REPORT-03-mitre-atlas.md) |
-| 04 | [Build a Vulnerable LLM Application](./exercises/EX-04-vulnerable-llm-app.md) | 3 | 4 | [Report](./reports/REPORT-04-vulnerable-app.md) |
-| 05 | [STRIDE Threat Model — LLM Financial App](./exercises/EX-05-stride-threat-model.md) | 3–4 | 6 | [Report](./reports/REPORT-05-stride.md) |
-| 06 | [Full Threat Model Document](./exercises/EX-06-threat-model-document.md) | 5–6 | 6 | [Report](./reports/REPORT-06-threat-model-final.md) |
-| 07 | [Week 1 Review & LinkedIn Article](./exercises/EX-07-week1-review.md) | 7 | 8 | — |
+| 01 | [Environment Setup](./exercises/EX-01-environment-setup.md) | ✅ Complete | 3 |
+| 02 | [OWASP LLM Top 10 Deep Dive](./exercises/EX-02-owasp-llm-top10.md) | ✅ Complete | 4 |
+| 03 | [MITRE ATLAS Mapping](./exercises/EX-03-mitre-atlas-mapping.md) | ✅ Complete | 3 |
+| 04 | [Build a Vulnerable LLM Application](./exercises/EX-04-vulnerable-llm-app.md) | ✅ Complete | 4 |
+| 05 | [STRIDE Threat Model](./exercises/EX-05-stride-threat-model.md) | ✅ Complete | 6 |
+| 06 | [Full Threat Model Document](./exercises/EX-06-threat-model-document.md) | ✅ Complete | 6 |
+| 07 | [Week 1 Review & LinkedIn Article](./exercises/EX-07-week1-review.md) | ✅ Complete | 8 |
 
 ---
 

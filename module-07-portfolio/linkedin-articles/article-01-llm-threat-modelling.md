@@ -80,8 +80,7 @@ If you are working on AI security in financial services or regulated industries,
 
 ---
 
-*Narendra Karki · CAISP*
+*Narendra Karki · CAISP, CISA, CISM, CISSP*
 *AI Security · SecOps · DevSecOps*
-*Bahrain · United Kingdom*
 
 *#AISecurity #LLMSecurity #FinancialServices #CyberSecurity #CAISP #ThreatModelling #GenerativeAI*
