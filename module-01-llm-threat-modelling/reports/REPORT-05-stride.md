@@ -203,7 +203,43 @@ with no human oversight and no audit trail.
 ## 13. Personal Notes
 
 > *What surprised me / what I want to remember:*
+## 13. Personal Notes
+
+> *What surprised me / what I want to remember:*
+> What STRIDE revealed that EX-04 missed was the Repudiation 
+> threat (T-03) — the complete absence of an audit trail. In 
+> traditional threat modelling we always flag missing logging 
+> as a compliance risk, but it is easy to overlook in LLM 
+> deployments where the focus naturally falls on prompt 
+> injection and data disclosure. In a regulated financial 
+> services environment, no audit trail is not just a security 
+> gap — it is a DORA and FCA compliance violation by default. 
+> STRIDE forced this into scope where opportunistic testing 
+> in EX-04 did not.
 >
+> What surprised me most was the email exfiltration finding 
+> (T-11) — and it raised a practical defensive question I had 
+> not considered before: financial institutions must now add 
+> LLM-originated email as a detection category in their email 
+> gateway rules. Emails generated and sent by LLM agents will 
+> have specific characteristics — unusual sending patterns, 
+> atypical content structure, machine-generated language — 
+> that DLP and email security gateways should be configured 
+> to identify, alert on, and block. This is a defensive gap 
+> that most email gateway configurations do not currently 
+> address.
+>
+> Compared to STRIDE on traditional applications , the methodology maps cleanly but 
+> the threat landscape is significantly broader. In 
+> traditional STRIDE, Elevation of Privilege requires a 
+> code-level vulnerability — a CVE, a misconfigured ACL, 
+> a privilege escalation exploit. In LLM systems it requires 
+> only a well-crafted sentence. STRIDE on LLM applications 
+> does not replace traditional security hardening — it adds 
+> an entirely new attack surface layer that sits above the 
+> network, above the application, at the natural language 
+> layer — and that layer has no equivalent defensive tooling 
+> yet.
 
 ---
 
