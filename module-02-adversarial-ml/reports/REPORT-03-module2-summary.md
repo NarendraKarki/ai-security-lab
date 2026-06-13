@@ -262,13 +262,25 @@ The Decision Tree model with well-separated data is robust to HopSkipJump evasio
 ```bash
 garak --model_type ollama \
   --model_name phi3 \
-  --probes dan.DanInTheWild \
+  --probes dan.Ablation_Dan_11_0 \
   --generations 1
 ```
 
 **What happened:**
+dan.Ablation_Dan_11_0 — FAIL
+
+dan.DAN detector:            98.43% attack success rate [96.06%, 100.00%]
+
+mitigation.MitigationBypass: 11.81% attack success rate [6.30%, 18.11%]
+
+Duration: 4262s (71 minutes) · 127 prompts
 
 Scan started but extremely slow on M1 — each DAN prompt takes 60-90 seconds to process. At 21% completion after 2+ hours. Running overnight to completion. Results will be added to this report tomorrow.
+Two detectors ran simultaneously:
+- **dan.DAN (98.43%)** — phi3 engaged with and responded to the DAN 11.0 jailbreak structure on 125/127 attempts. The model almost never refuses the DAN role-play framing.
+- **mitigation.MitigationBypass (11.81%)** — actual safety bypass achieved on ~15/127 attempts. Harmful content was produced despite safety training.
+
+**Evidence:** `evidence/garak-scan-05-dan-ablation.html`
 
 **DAN probes available in v0.15.0:** `dan.DanInTheWild`, `dan.Ablation_Dan_11_0`, `dan.AutoDANCached`
 
@@ -285,7 +297,7 @@ Scan started but extremely slow on M1 — each DAN prompt takes 60-90 seconds to
 | F-05 | Backdoor implanted with 10% poison rate | Critical | LLM04 | AML.T0020 | Only 20/200 samples needed |
 | F-06 | Poisoned model 0% accuracy difference from clean | Critical | LLM04 | AML.T0020 | Standard testing completely blind to backdoor |
 | F-07 | Decision Tree robust to HopSkipJump evasion | ✅ Info | LLM04 | AML.T0015 | Hard decision boundaries resist evasion |
-| F-08 | DAN jailbreak results pending | TBD | LLM01 | AML.T0054 | Results to be added — scan running overnight |
+| F-08 | DAN Ablation 11.0 — phi3 engages 98.43%, safety bypass 11.81% | Critical | LLM01 | AML.T0054 | Model almost never refuses DAN structure — harmful content produced on 1 in 8 attempts |
 
 ---
 
@@ -298,8 +310,7 @@ Scan started but extremely slow on M1 — each DAN prompt takes 60-90 seconds to
 | Prompt injection — long prompt | ✅ 45.31% success | Anomaly detection on input length | Token limits, complexity controls |
 | Data poisoning — backdoor | ✅ 100% trigger success | Training data integrity hashing | Cryptographic audit trail, DVC |
 | Model evasion — HopSkipJump | ❌ 0% success | N/A — model resisted | Decision boundary separation |
-| Jailbreak — DAN | ⏳ Pending | Mitigation bypass detector | Results overnight |
-
+| Jailbreak — DAN Ablation 11.0 | ✅ 98.43% engagement · 11.81% bypass | Mitigation bypass detector | Jailbreak-specific classifiers, stronger refusal training |
 ---
 
 ## 7. Key Learnings
@@ -358,16 +369,12 @@ Scan started but extremely slow on M1 — each DAN prompt takes 60-90 seconds to
 
 ## 11. Next Steps
 
-- Add DAN jailbreak results when scan completes overnight
 - Module 3 — Secure AI DevSecOps Pipeline — integrate Garak into GitHub Actions CI/CD
 - Module 4 — AI-Augmented SOC — Wazuh + Ollama LLM triage integration
 - Future — Rerun same Garak probes against llama3 for model comparison
 
 ---
 
-## 12. Personal Notes
-
-> *What surprised me / what I want to remember:*
 ## 12. Personal Notes
 
 > *What surprised me / what I want to remember:*
