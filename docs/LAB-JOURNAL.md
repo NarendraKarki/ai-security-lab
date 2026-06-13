@@ -76,3 +76,38 @@
 ### Questions for further research
 - How should email gateways detect LLM-originated correspondence?
 - What SIEM detection rules address LLM repudiation gaps?
+
+---
+
+## Day 6 — 2026-06-13
+
+### What I am working on today
+- DAN jailbreak probes — dan.DanInTheWild running (slow — long prompts)
+- IBM ART data poisoning demo script created
+- Setting up for full Module 2 completion
+
+### DAN probe notes (while running)
+- DAN = Do Anything Now — jailbreak family
+- More sophisticated than promptinject — uses role-play to bypass safety
+- DanInTheWild uses real-world jailbreak prompts from public sources
+- phi3 on M1 takes 45-90 seconds per prompt — will take 30-45 minutes total
+
+### AML.T0020 — Poison Training Data notes
+Data poisoning is particularly insidious because the poisoned 
+model behaves identically to a clean model on all standard 
+inputs — the backdoor only activates on the specific trigger 
+pattern. This means standard accuracy testing and routine 
+model evaluation will not detect it. Detection requires 
+dedicated threat hunting exercises, statistical anomaly 
+detection on model outputs over time, and automated audits 
+of training data provenance and integrity. In a financial 
+services context — where fraud detection and credit scoring 
+models are retrained periodically on new data — the retraining 
+pipeline itself becomes an attack surface that requires the 
+same security controls as any other critical system.
+
+### Questions
+- Are there any integrity tools that can detect unauthorised 
+  changes to LLM model weights or training data?
+
+  
