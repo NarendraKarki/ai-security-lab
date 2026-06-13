@@ -79,35 +79,29 @@
 
 ---
 
+---
+
 ## Day 6 — 2026-06-13
 
-### What I am working on today
-- DAN jailbreak probes — dan.DanInTheWild running (slow — long prompts)
-- IBM ART data poisoning demo script created
-- Setting up for full Module 2 completion
+### What I worked on today
+- DAN jailbreak scan started — running overnight (at 31% end of day)
+- ART data poisoning demo — Critical finding: 0% accuracy difference
+- ART model evasion demo — Defensive finding: Decision Tree robust
+- Module 2 summary report completed
+- Personal reference documents generated for both modules
 
-### DAN probe notes (while running)
-- DAN = Do Anything Now — jailbreak family
-- More sophisticated than promptinject — uses role-play to bypass safety
-- DanInTheWild uses real-world jailbreak prompts from public sources
-- phi3 on M1 takes 45-90 seconds per prompt — will take 30-45 minutes total
+### What worked
+- ART poisoning demo ran perfectly — 10% poison rate sufficient for backdoor
+- ART evasion — interesting result: Decision Tree resistant to HopSkipJump
+- Module 2 report comprehensive — covers all findings with framework mapping
 
-### AML.T0020 — Poison Training Data notes
-Data poisoning is particularly insidious because the poisoned 
-model behaves identically to a clean model on all standard 
-inputs — the backdoor only activates on the specific trigger 
-pattern. This means standard accuracy testing and routine 
-model evaluation will not detect it. Detection requires 
-dedicated threat hunting exercises, statistical anomaly 
-detection on model outputs over time, and automated audits 
-of training data provenance and integrity. In a financial 
-services context — where fraud detection and credit scoring 
-models are retrained periodically on new data — the retraining 
-pipeline itself becomes an attack surface that requires the 
-same security controls as any other critical system.
+### What didn't work and how I fixed it
+- DAN scan too slow on M1 (60-90s per prompt) — running overnight
 
-### Questions
-- Are there any integrity tools that can detect unauthorised 
-  changes to LLM model weights or training data?
+### Things I want to understand better
+- How ModelScan detects backdoors in serialised model files
+- RLHF feedback loop poisoning — how to detect in practice
 
-  
+### Questions for further research
+- What is the minimum poison rate needed for a reliable backdoor in an LLM?
+- How does Llama Guard work internally as an input classifier?
