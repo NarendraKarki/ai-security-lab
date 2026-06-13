@@ -368,7 +368,43 @@ Scan started but extremely slow on M1 — each DAN prompt takes 60-90 seconds to
 ## 12. Personal Notes
 
 > *What surprised me / what I want to remember:*
+## 12. Personal Notes
+
+> *What surprised me / what I want to remember:*
+> What surprised me most across Module 2 is that the two most 
+> dangerous findings operate at completely opposite ends of the 
+> attack lifecycle — prompt injection attacks the deployed model 
+> at inference time, while data poisoning attacks the training 
+> pipeline before the model ever reaches production. Traditional 
+> security thinking focuses on protecting deployed systems. 
+> Module 2 demonstrated that in AI security, the training 
+> pipeline itself is equally critical attack surface — and one 
+> that most organisations have far weaker controls around.
 >
+> The 61.33% prompt injection success rate from Garak was 
+> striking — not because the vulnerability exists (we already 
+> knew that from Module 1), but because Garak quantified it 
+> with statistical confidence. That is the difference between 
+> telling a CISO "the model is vulnerable to injection" and 
+> telling them "61.33% of injection attempts succeed with 95% 
+> confidence interval 55.47% to 67.19%". The second statement 
+> is actionable risk data. The first is an observation.
+>
+> The 0% accuracy difference in data poisoning is something 
+> I will remember for a long time. Every security control I 
+> have implemented in my career — from SOC monitoring to DLP 
+> to vulnerability scanning — assumes that a compromised 
+> system shows some observable signal. The poisoned model 
+> breaks that assumption completely. Detection requires an 
+> entirely different approach: proactive red-teaming with 
+> trigger patterns, statistical distribution monitoring, and 
+> cryptographic data provenance — none of which are standard 
+> in current SOC tooling.
+>
+> Key tools to remember: Garak for systematic LLM scanning 
+> with statistical confidence, IBM ART for ML robustness 
+> testing, ModelScan for model integrity, DVC for training 
+> data provenance, Cleanlab for label error detection.
 
 ---
 
