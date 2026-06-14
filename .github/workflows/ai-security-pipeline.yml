@@ -50,16 +50,26 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep
 
-      - name: Run Semgrep custom AI rules
+- name: Run Semgrep custom AI rules
         run: |
-          semgrep --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml module-01-llm-threat-modelling/tools/vulnfinbot/ --json -o semgrep-report.json --exit-code 0 || true
-          semgrep --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml module-01-llm-threat-modelling/tools/vulnfinbot/ --text --exit-code 0 || true
+          semgrep \
+            --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml \
+            module-01-llm-threat-modelling/tools/vulnfinbot/ \
+            --json \
+            -o semgrep-report.json || true
+          semgrep \
+            --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml \
+            module-01-llm-threat-modelling/tools/vulnfinbot/ \
+            --text || true
+          ls -la semgrep-report.json || echo "No semgrep report generated"
 
       - name: Upload Semgrep report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: semgrep-report
           path: semgrep-report.json
+          if-no-files-found: warn
 
   security-summary:
     name: Security Summary
@@ -74,8 +84,10 @@ jobs:
         with:
           name: bandit-report
 
-      - name: Download Semgrep report
+- name: Download Semgrep report
         uses: actions/download-artifact@v4
+        if: always()
+        continue-on-error: true
         with:
           name: semgrep-report
 
