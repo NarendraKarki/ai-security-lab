@@ -29,8 +29,8 @@ The lab directly maps to the following CV competencies:
 | # | Module | Status | Key Tools | LinkedIn Article |
 |---|---|---|---|---|
 | 01 | [LLM Threat Modelling](./module-01-llm-threat-modelling/) | ✅ Complete | STRIDE, MITRE ATLAS, OWASP LLM Top 10 | [Link](#) |
-| 02 | [Adversarial ML](./module-02-adversarial-ml/) | ⏳ Pending | Garak, IBM ART, Python | [Link](#) |
-| 03 | [Secure AI DevSecOps Pipeline](./module-03-secure-ai-pipeline/) | ⏳ Pending | Bandit, Semgrep, OWASP ZAP, DefectDojo | [Link](#) |
+| 02 | [Adversarial ML](./module-02-adversarial-ml/) | ✅ Complete | Garak, IBM ART, Python | [Link](#) |
+| 03 | [Secure AI DevSecOps Pipeline](./module-03-secure-ai-pipeline/) | ✅ Complete | Bandit, Semgrep, OWASP ZAP, GitHub Actions | [Link](#) |
 | 04 | [AI-Augmented SOC](./module-04-ai-augmented-soc/) | ⏳ Pending | Wazuh, Ollama, Llama 3, LangChain | [Link](#) |
 | 05 | [Agentic AI & API Security](./module-05-agentic-api-security/) | ⏳ Pending | LangChain, AutoGen, OWASP API Top 10 | [Link](#) |
 | 06 | [AI Governance & Compliance](./module-06-ai-governance/) | ⏳ Pending | EU AI Act, NIST AI RMF, ISO/IEC 42001 | [Link](#) |
