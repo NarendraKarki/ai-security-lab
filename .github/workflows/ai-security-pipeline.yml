@@ -1,0 +1,130 @@
+name: AI Security Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # allows manual trigger
+
+jobs:
+
+  # ─── JOB 1: SAST — Bandit ────────────────────────────────────────────
+  bandit-sast:
+    name: Bandit SAST Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit scan
+        run: |
+          bandit -r module-01-llm-threat-modelling/tools/vulnfinbot/ \
+            -f json \
+            -o bandit-report.json \
+            --exit-zero
+          bandit -r module-01-llm-threat-modelling/tools/vulnfinbot/ \
+            -f txt \
+            --exit-zero
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.json
+
+  # ─── JOB 2: SAST — Semgrep Custom AI Rules ───────────────────────────
+  semgrep-sast:
+    name: Semgrep AI Security Rules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep custom AI rules
+        run: |
+          semgrep \
+            --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml \
+            module-01-llm-threat-modelling/tools/vulnfinbot/ \
+            --json \
+            -o semgrep-report.json \
+            --exit-code 0
+          semgrep \
+            --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml \
+            module-01-llm-threat-modelling/tools/vulnfinbot/ \
+            --text
+
+      - name: Upload Semgrep report
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep-report.json
+
+  # ─── JOB 3: Security Summary ─────────────────────────────────────────
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [bandit-sast, semgrep-sast]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Bandit report
+        uses: actions/download-artifact@v4
+        with:
+          name: bandit-report
+
+      - name: Download Semgrep report
+        uses: actions/download-artifact@v4
+        with:
+          name: semgrep-report
+
+      - name: Print security summary
+        run: |
+          echo "================================================"
+          echo "AI Security Pipeline — Scan Summary"
+          echo "================================================"
+          echo ""
+          echo "BANDIT FINDINGS:"
+          python3 -c "
+          import json
+          with open('bandit-report.json') as f:
+              data = json.load(f)
+          results = data.get('results', [])
+          print(f'  Total issues: {len(results)}')
+          for r in results:
+              print(f'  [{r[\"issue_severity\"]}] {r[\"test_id\"]}: {r[\"issue_text\"][:60]}')
+              print(f'    Location: {r[\"filename\"]}:{r[\"line_number\"]}')
+          "
+          echo ""
+          echo "SEMGREP FINDINGS:"
+          python3 -c "
+          import json
+          with open('semgrep-report.json') as f:
+              data = json.load(f)
+          results = data.get('results', [])
+          print(f'  Total issues: {len(results)}')
+          for r in results:
+              print(f'  [{r[\"extra\"][\"severity\"]}] {r[\"check_id\"].split(\".\")[-1]}')
+              print(f'    Location: {r[\"path\"]}:{r[\"start\"][\"line\"]}')
+          "
+          echo ""
+          echo "================================================"
+          echo "Pipeline complete — review findings above"
+          echo "================================================"
