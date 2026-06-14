@@ -25,9 +25,10 @@ jobs:
         run: pip install bandit
 
       - name: Run Bandit scan
-        run: |
-          bandit -r module-01-llm-threat-modelling/tools/vulnfinbot/ -f json -o bandit-report.json --exit-zero
-          bandit -r module-01-llm-threat-modelling/tools/vulnfinbot/ -f txt --exit-zero
+        run: bandit -r module-01-llm-threat-modelling/tools/vulnfinbot/ -f json -o bandit-report.json --exit-zero
+
+      - name: Show Bandit results
+        run: bandit -r module-01-llm-threat-modelling/tools/vulnfinbot/ -f txt --exit-zero
 
       - name: Upload Bandit report
         uses: actions/upload-artifact@v4
@@ -50,18 +51,11 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep
 
-- name: Run Semgrep custom AI rules
-        run: |
-          semgrep \
-            --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml \
-            module-01-llm-threat-modelling/tools/vulnfinbot/ \
-            --json \
-            -o semgrep-report.json || true
-          semgrep \
-            --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml \
-            module-01-llm-threat-modelling/tools/vulnfinbot/ \
-            --text || true
-          ls -la semgrep-report.json || echo "No semgrep report generated"
+      - name: Run Semgrep JSON output
+        run: semgrep --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml module-01-llm-threat-modelling/tools/vulnfinbot/ --json -o semgrep-report.json || true
+
+      - name: Run Semgrep text output
+        run: semgrep --config module-03-secure-ai-pipeline/configs/semgrep-rules/ai-security-rules.yaml module-01-llm-threat-modelling/tools/vulnfinbot/ --text || true
 
       - name: Upload Semgrep report
         uses: actions/upload-artifact@v4
@@ -75,6 +69,7 @@ jobs:
     name: Security Summary
     runs-on: ubuntu-latest
     needs: [bandit-sast, semgrep-sast]
+    if: always()
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -84,9 +79,8 @@ jobs:
         with:
           name: bandit-report
 
-- name: Download Semgrep report
+      - name: Download Semgrep report
         uses: actions/download-artifact@v4
-        if: always()
         continue-on-error: true
         with:
           name: semgrep-report
@@ -94,26 +88,31 @@ jobs:
       - name: Print security summary
         run: |
           echo "================================================"
-          echo "AI Security Pipeline — Scan Summary"
+          echo "AI Security Pipeline - Scan Summary"
           echo "================================================"
           echo "BANDIT FINDINGS:"
           python3 -c "
           import json
           with open('bandit-report.json') as f:
-              data = json.load(f)
+            data = json.load(f)
           results = data.get('results', [])
           print(f'  Total issues: {len(results)}')
           for r in results:
-              print(f'  [{r[\"issue_severity\"]}] {r[\"test_id\"]}: {r[\"issue_text\"][:60]}')
+            print(f'  [{r[\"issue_severity\"]}] {r[\"test_id\"]}: {r[\"issue_text\"][:60]}')
           "
           echo "SEMGREP FINDINGS:"
           python3 -c "
-          import json
-          with open('semgrep-report.json') as f:
+          import json, os
+          if not os.path.exists('semgrep-report.json'):
+            print('  No semgrep report found')
+          else:
+            with open('semgrep-report.json') as f:
               data = json.load(f)
-          results = data.get('results', [])
-          print(f'  Total issues: {len(results)}')
-          for r in results:
+            results = data.get('results', [])
+            print(f'  Total issues: {len(results)}')
+            for r in results:
               print(f'  [{r[\"extra\"][\"severity\"]}] {r[\"check_id\"].split(\".\")[-1]}')
           "
+          echo "================================================"
+          echo "Pipeline complete"
           echo "================================================"
