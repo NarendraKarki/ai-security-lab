@@ -1,3 +1,11 @@
+> ⚠️ **Disclaimer:** This lab is for educational purposes only. 
+> All vulnerable applications, attack scenarios, customer data, 
+> IP addresses, and organisation names are entirely fictional 
+> and created specifically for security research and learning. 
+> No real systems, organisations, clients, or individuals are 
+> represented. Do not use these techniques against systems you 
+> do not own or have explicit written permission to test.
+
 # AI Security Lab — Portfolio
 
 > **Narendra Karki** · CAISP, CISA, CISM, CISSP
