@@ -3,6 +3,7 @@
 **Module:** M02 — Adversarial ML  
 **Day:** 6  
 **Status:** ✅ Complete  
+**Completed:** 2026-06-13  
 
 ---
 
