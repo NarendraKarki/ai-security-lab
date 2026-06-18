@@ -49,3 +49,12 @@ id_ed25519
 .pytest_cache/
 htmlcov/
 .coverage
+
+# Additional credential protection
+*.p12
+*.pfx
+secrets/
+credentials/
+*_credentials.json
+*_serviceaccount.json
+ollama-config.json
