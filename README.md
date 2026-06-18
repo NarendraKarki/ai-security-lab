@@ -104,4 +104,4 @@ MIT — all lab code and documentation is freely reusable with attribution.
 
 ---
 
-*Lab started: June 2026 · CAISP certified: June 2026*
+Lab started: June 2026 · CAISP · CISSP · CISA · CISM
