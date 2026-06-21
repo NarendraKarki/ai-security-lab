@@ -1,110 +1,145 @@
 # Module 01 — LLM Threat Modelling
 
-**Duration:** Days 1–7 (56 hours)  
+**Duration:** Days 1–4
 **Status:** ✅ Complete
-**Frameworks:** STRIDE · OWASP LLM Top 10 · MITRE ATLAS  
 
 ---
 
-## Objective
+## Scope
 
-Build a complete, reusable threat model for an LLM-powered application in a regulated financial services context. This module produces artefacts that underpin every subsequent module — understanding the threat landscape first ensures all defensive work is purposeful and traceable.
-
----
-
-## Learning Outcomes
-
-By the end of this module you will be able to:
-
-1. Apply STRIDE threat modelling methodology to LLM-based systems
-2. Map identified threats to OWASP Top 10 for LLMs (2025 edition)
-3. Map identified threats to MITRE ATLAS tactics and techniques
-4. Identify attack surfaces unique to agentic and RAG-based architectures
-5. Produce a professional threat model document suitable for a financial services audience
-6. Explain the difference between traditional application threat modelling and LLM-specific threat modelling
+This module produces a formal threat model for an LLM-based application
+(VulnFinBot — a simulated financial services chatbot), then validates
+that model against real adversarial behaviour. These are two distinct
+activities and are presented separately below.
 
 ---
 
-## Background Reading (Complete Before Exercises)
+## Part A — Threat Model (the primary deliverable)
 
-| Resource | Time | Priority |
+The actual threat-modelling output of this module:
+
+| Artifact | What it contains | Location |
 |---|---|---|
-| [OWASP LLM Top 10 — 2025](https://owasp.org/www-project-top-10-for-large-language-model-applications/) | 2 hrs | Essential |
-| [MITRE ATLAS Matrix](https://atlas.mitre.org/matrices/ATLAS) | 2 hrs | Essential |
-| [STRIDE Threat Modelling (Microsoft)](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats) | 1 hr | Essential |
-| [NIST AI RMF Playbook](https://airc.nist.gov/Docs/2) | 1 hr | Recommended |
-| [Gartner: AI TRiSM Framework](https://www.gartner.com/en/articles/what-is-ai-trism) | 30 min | Recommended |
+| Architecture / Data Flow Diagram | System components, data flows, trust boundaries | `reports/REPORT-06-threat-model-final.md` |
+| Asset inventory | Customer PII, credentials, system prompt, tool access | `reports/REPORT-06-threat-model-final.md` |
+| Trust boundary analysis | 5 components: User↔API, System Prompt, Tool Dispatcher, Response↔User, Ollama Inference | `reports/REPORT-05-stride.md` |
+| STRIDE threat enumeration | 15 threats across all 6 STRIDE categories | `reports/REPORT-05-stride.md` |
+| Risk ratings | 8 Critical · 6 High · 1 Medium | `reports/REPORT-05-stride.md` |
+| OWASP LLM Top 10 mapping | All 10 categories mapped to identified threats | `reports/REPORT-02-owasp-llm-top10.md` |
+| MITRE ATLAS mapping | AML.T0051, AML.T0056, AML.T0057 mapped to threats | `reports/REPORT-03-mitre-atlas.md` |
+| Mitigations / security requirements | Prioritised remediation list (P1–P3) | `reports/REPORT-06-threat-model-final.md` |
+
+### Methodology
+
+```
+System Design (VulnFinBot architecture)
+        │
+        ▼
+Assets (customer PII, system prompt, tool access, credentials)
+        │
+        ▼
+Trust Boundaries (5 components identified)
+        │
+        ▼
+Threat Enumeration (STRIDE × 5 components = 15 threats)
+        │
+        ▼
+Attack Vectors (prompt injection, excessive agency, data
+                disclosure, tampering, DoS — mapped per threat)
+        │
+        ▼
+Mitigations (P1/P2/P3 prioritised remediation list)
+```
+
+Prompt injection is **one of several** attack vectors considered, not
+the focus of the model. The STRIDE pass covers spoofing, tampering,
+repudiation, information disclosure, denial of service, and elevation
+of privilege independently of any single technique.
+
+### Top risk findings
+
+1. No technical boundary between system prompt and user input — root
+   cause for 6 of the 15 threats (T-02, T-06, T-08 and related)
+2. Customer PII embedded directly in system prompt context (T-09)
+3. No output filtering before returning LLM responses to the user (T-13)
+4. Tool dispatcher has no authorisation gate on high-impact functions
+   such as `send_email()` (T-11)
+
+Full risk register, trust boundary diagram, and mitigation roadmap:
+[`reports/REPORT-06-threat-model-final.md`](./reports/REPORT-06-threat-model-final.md)
+
+---
+
+## Part B — Adversarial Validation (testing the model's assumptions)
+
+Once the threat model identified theoretical attack vectors, those
+vectors were tested against a live instance of VulnFinBot to confirm
+(or refute) that the threats were practically exploitable — not just
+theoretically possible.
+
+This is **validation of the threat model**, not the threat model
+itself. It answers: *"Are the risks we identified actually exploitable,
+or only theoretical?"*
+
+| Threat (from Part A) | Validated via | Result | Evidence |
+|---|---|---|---|
+| T-09 — System prompt disclosure | Live extraction attempt | ✅ Confirmed exploitable | `evidence/ex-04-attack1-system-prompt-extraction.png` |
+| T-02 — Prompt injection / tampering | Direct injection attempt | ✅ Confirmed exploitable | `evidence/ex-04-attack2-prompt-injection.png` |
+| T-04 — Customer data disclosure | Direct data request | ✅ Confirmed exploitable | `evidence/ex-04-attack3-data-extraction.png` |
+| T-11 — Excessive agency / tool misuse | Unauthorised tool invocation attempt | ✅ Confirmed exploitable | `evidence/ex-04-attack4-excessive-agency.png` |
+
+Detailed write-up of each validation attempt, including exact prompts
+used and observed responses: [`reports/REPORT-04-vulnerable-app.md`](./reports/REPORT-04-vulnerable-app.md)
+
+Separately, a public LLM prompt-injection benchmark (Gandalf, by Lakera)
+was used as an additional exploration of injection resistance —
+unrelated to VulnFinBot's specific threat model:
+[`reports/REPORT-05-gandalf.md`](./reports/REPORT-05-gandalf.md)
+
+---
+
+## Why both parts matter
+
+A threat model that is never validated against real behaviour is a
+set of untested assumptions. Adversarial validation without a
+preceding threat model is unstructured poking — it finds *some* bugs
+but provides no systematic coverage or risk prioritisation.
+
+This module deliberately does both, in order: model first, validate
+second. The STRIDE artifacts in Part A define the *complete* threat
+surface across all six categories; Part B confirms that 4 of the
+identified Critical/High threats are practically — not just
+theoretically — exploitable.
+
+---
+
+## Folder structure
+
+```
+module-01-llm-threat-modelling/
+├── reports/
+│   ├── REPORT-02-owasp-llm-top10.md      ← framework mapping
+│   ├── REPORT-03-mitre-atlas.md          ← framework mapping
+│   ├── REPORT-04-vulnerable-app.md       ← Part B: validation write-up
+│   ├── REPORT-05-stride.md               ← Part A: STRIDE threat model
+│   ├── REPORT-05-gandalf.md              ← supplementary injection testing
+│   └── REPORT-06-threat-model-final.md   ← Part A: full threat model document
+├── exercises/                            ← exercise-by-exercise working notes
+├── evidence/                             ← Part B: validation screenshots
+└── tools/                                ← VulnFinBot (test target)
+```
 
 ---
 
 ## Exercises
 
-| # | Exercise | Day | Hours | Report |
-|---|---|---|---|---|
-| 01 | [Environment Setup](./exercises/EX-01-environment-setup.md) | ✅ Complete | 3 |
-| 02 | [OWASP LLM Top 10 Deep Dive](./exercises/EX-02-owasp-llm-top10.md) | ✅ Complete | 4 |
-| 03 | [MITRE ATLAS Mapping](./exercises/EX-03-mitre-atlas-mapping.md) | ✅ Complete | 3 |
-| 04 | [Build a Vulnerable LLM Application](./exercises/EX-04-vulnerable-llm-app.md) | ✅ Complete | 4 |
-| 05 | [STRIDE Threat Model](./exercises/EX-05-stride-threat-model.md) | ✅ Complete | 6 |
-| 06 | [Full Threat Model Document](./exercises/EX-06-threat-model-document.md) | ✅ Complete | 6 |
-| 07 | [Week 1 Review & LinkedIn Article](./exercises/EX-07-week1-review.md) | ✅ Complete | 8 |
-
----
-
-## Key Deliverables
-
-- [ ] `threat-model-llm-financial-services.md` — full threat model document
-- [ ] `stride-mapping-table.xlsx` — STRIDE × OWASP × ATLAS cross-reference
-- [ ] `vulnerable-llm-app/` — intentionally vulnerable Flask app used as target
-- [ ] Lab reports for all 7 exercises
-- [ ] LinkedIn article: *LLM Threat Modelling in Financial Services*
-
----
-
-## Tools Used
-
-| Tool | Purpose | Install |
-|---|---|---|
-| Python 3.11+ | All scripting | `brew install python` |
-| Flask | Vulnerable LLM app | `pip install flask` |
-| OpenAI / Ollama | LLM backend | Local via Ollama |
-| draw.io / Eraser.io | Threat model diagrams | Web-based |
-| VS Code | IDE | Already installed |
-
----
-
-## OWASP LLM Top 10 Coverage
-
-| OWASP ID | Name | Covered in Exercise |
-|---|---|---|
-| LLM01 | Prompt Injection | EX-04, EX-05 |
-| LLM02 | Sensitive Information Disclosure | EX-05 |
-| LLM03 | Supply Chain | EX-05 |
-| LLM04 | Data and Model Poisoning | EX-05, M2 |
-| LLM05 | Improper Output Handling | EX-04, EX-05 |
-| LLM06 | Excessive Agency | EX-05, M5 |
-| LLM07 | System Prompt Leakage | EX-04 |
-| LLM08 | Vector and Embedding Weaknesses | EX-05 |
-| LLM09 | Misinformation | EX-05 |
-| LLM10 | Unbounded Consumption | EX-05 |
-
----
-
-## MITRE ATLAS Coverage
-
-| Tactic | Technique | Exercise |
-|---|---|---|
-| Initial Access | LLM Prompt Injection (AML.T0051) | EX-04 |
-| Execution | LLM Jailbreak (AML.T0054) | EX-04 |
-| Exfiltration | LLM Data Leakage (AML.T0057) | EX-05 |
-| Impact | LLM Denial of Service | EX-05 |
-
----
-
-## Notes & Observations
-
-> Running log — add entries as you work through exercises.
-
----
-
-*Module started: [DATE] · Target completion: Day 7*
+| # | Exercise | Part | Status |
+|---|---|---|---|
+| EX-01 | Environment setup | — | ✅ Complete |
+| EX-02 | OWASP LLM Top 10 deep dive | A | ✅ Complete |
+| EX-03 | MITRE ATLAS attack chain mapping | A | ✅ Complete |
+| EX-04 | VulnFinBot live attacks | B | ✅ Complete |
+| EX-05 | STRIDE threat model | A | ✅ Complete |
+| EX-05 (supplementary) | Gandalf prompt injection benchmark | B | ✅ Complete |
+| EX-06 | Final threat model document | A | ✅ Complete |
+| EX-07 | Portfolio write-up | — | ✅ Complete |
