@@ -68,10 +68,15 @@ Object Level Authorization). It is not fixed in this exercise; it is
 documented as a known, deliberate baseline condition.
 
 ### Relevant Frameworks
-- **OWASP API Security Top 10:** API1 — Broken Object Level
-  Authorization (the gap this baseline agent is built to expose in
-  Exercise 02); API5 — Broken Function Level Authorization (a
-  read-only support persona retains access to a write-action tool)
+- **OWASP Top 10 for Agentic Applications 2026 (ASI):** ASI02 — Tool
+  Misuse (primary fit for F-01/F-02), with secondary relevance to
+  ASI03 — Identity & Privilege Abuse and ASI09 — Human-Agent Trust
+  Exploitation. Adopted as the primary framework for this module
+  partway through Exercise 01 — see Section 11 for the reasoning.
+  Originally scoped against the OWASP API Security Top 10 (API1 —
+  Broken Object Level Authorization, API5 — Broken Function Level
+  Authorization), which remains accurate but is a less precise fit
+  for an agentic system than the purpose-built Agentic framework.
 - **MITRE ATLAS:** AML.T0029 — Erode AI Model Integrity (applicable
   to the broader agentic threat surface this module addresses)
 - **NIST AI RMF:** GOVERN function — accountability and authorization
@@ -348,6 +353,80 @@ to refund an account other than the one currently in session — will
 be tested first (`ATK-001`), since it tests the foundational
 question (does any session-account binding exist at all) before
 escalating to indirect prompt-injection framing.
+
+Exercise 03 will be retargeted, before work begins, from the
+originally-planned OWASP API Top 10 to the **OWASP Top 10 for
+Agentic Applications 2026 (ASI01–ASI10)**, published by the OWASP
+GenAI Security Project in December 2025. This is a more precise fit
+for FinAssist than the generic API framework — OWASP's own
+qualifying criteria for the Agentic list (planning/reasoning,
+tool-using integration with external APIs, persistent session state)
+match this agent's architecture directly, whereas the API Top 10 is
+written for traditional REST API attack surfaces and only maps
+loosely onto an agent's tool-calling layer. F-01/F-02 map most
+directly to **ASI02 — Tool Misuse**, with secondary relevance to
+ASI03 (Identity & Privilege Abuse, since `CURRENT_SESSION_ACCOUNT_ID`
+is a single global rather than a scoped identity) and ASI09
+(Human-Agent Trust Exploitation, since the corrected Step 4 run's
+`final_response` summarises the refund confidently without
+disclosing that no authorization check occurred). The remaining ASI
+categories (supply chain, code execution, inter-agent communication,
+cascading failures, rogue agents) do not apply to this single-agent,
+no-MCP, no-code-execution lab and will be marked explicitly
+out-of-scope in the Exercise 03 mapping table, rather than silently
+omitted.
+
+---
+
+## 12. Personal Notes
+
+> *What surprised me / what I want to remember:*
+
+What surprised me most was not finding the authorization gap itself
+— that was deliberately built in and expected. What surprised me was
+how *plausible* the false-positive BOLA finding looked on first
+read. The first run's verdict block said, in plain structured JSON,
+`"result": "fail", "control_violated": "API1-BOLA"`, with a
+populated `requested_account` field that genuinely didn't match the
+session account string. Read in isolation, without knowing the
+backend's actual `result_summary` field, that looks exactly like a
+real finding — clean, structured, unambiguous. It was only because
+the evidence schema captured the *outcome* text (`"REFUND FAILED —
+no such account"`) alongside the structured verdict that the
+discrepancy was even visible. If I had built the verdict logic to
+only log its own conclusion, and not the raw evidence it reasoned
+from, I would have shipped a false Critical finding into Exercise
+01's evidence folder with no way for a future reader — or me, a week
+later — to catch it.
+
+This connects directly to something I now understand differently
+than I did at the start of this module: in agentic security testing,
+the thing most likely to be wrong is not the agent's behaviour — it
+is *your own instrumentation's interpretation* of the agent's
+behaviour. An LLM doing something unexpected is the expected failure
+mode you're testing for. Your own detection logic silently
+misclassifying a result is a failure mode you're not looking for,
+because you wrote the detection logic and trust it by default. The
+fix here — requiring the verdict function to check a literal
+outcome string (`"REFUND EXECUTED"`) rather than inferring success
+from "a sensitive tool was called" — is a small code change, but the
+underlying lesson is bigger: any automated security verdict needs to
+be falsifiable against the same raw evidence a human would check
+manually, or it becomes a black box that's just as capable of being
+wrong as the system it's testing.
+
+I also want to remember the LangChain dependency situation
+concretely: `langchain==1.3.10`'s `create_agent()` middleware model
+versus the classic `AgentExecutor`/`create_react_agent` pattern is
+not just a version bump — it's a different architecture, and the
+ecosystem is mid-transition. The orphaned `langgraph*` packages left
+behind after pinning to `0.1.20` are a visible artifact of that
+transition. Worth revisiting whether Module 5's later exercises
+should attempt the newer `create_agent()` API once Exercise 02 is
+complete, partly to compare whether the newer harness's default
+behaviour around tool permissions differs meaningfully from the
+classic ReAct pattern — that would itself be a relevant data point
+for ASI02/ASI03.
 
 ---
 
