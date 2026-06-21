@@ -1,4 +1,15 @@
 # LLM Application Threat Model
+## Architecture and trust boundaries
+
+![VulnFinBot data flow diagram](../evidence/vulnfinbot-dfd.png)
+
+Three trust boundaries are crossed in a single request cycle: the
+internet-to-application boundary (Flask API), the request-context
+assembly boundary (system prompt and tool dispatcher), and the
+model inference boundary (Ollama). Each boundary crossing is
+annotated with the STRIDE threat IDs that apply at that point —
+full descriptions in the threat register below.
+
 ## VulnFinBot — Financial Services Customer Service Agent
 
 **Document Reference:** TM-2026-001  
