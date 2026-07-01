@@ -1,0 +1,2 @@
+*.html linguist-documentation=true
+module-01-llm-threat-modelling/tools/vulnfinbot/templates/*.html linguist-vendored=true
